@@ -7,14 +7,12 @@ name: CI
 jobs:
 
   changed_pkgs:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.changed-pkgs.outputs.matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: retrieve changed pkgs
         id: changed-pkgs
         run: |
@@ -25,7 +23,7 @@ jobs:
   makepkg:
     needs: changed_pkgs
     name: makepkg
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix: ${{fromJson(needs.changed_pkgs.outputs.matrix)}}
     steps:
@@ -80,7 +78,7 @@ jobs:
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     needs: [changed_pkgs,makepkg]
     name: Push to AUR
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix: ${{fromJson(needs.changed_pkgs.outputs.matrix)}}
     steps:
